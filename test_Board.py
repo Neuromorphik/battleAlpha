@@ -74,7 +74,7 @@ class BoardTest(unittest.TestCase):
         # test valid coordinates
         self.assertEqual(board.coordinates_are_valid(0, 0), True) # edge case
         self.assertEqual(board.coordinates_are_valid(7, 7), True) # edge case
-        self.assertEqual(board.coordinates_are_valid(4, 4), True)
+        self.assertEqual(board.coordinates_are_valid(4, 4), True) # non edge case
 
         # test invalid coordinates
         self.assertEqual(board.coordinates_are_valid(-1, 0), False) # neg row
@@ -108,3 +108,37 @@ class BoardTest(unittest.TestCase):
 
         board.update_cell(0, 0, 4) # try too big value
         self.assertEqual(board.get_value_of_cell(0, 0), 3) # should fail and still be 3
+
+        self.assertEqual(board.get_value_of_cell(0, 1), 0) # ensure adjacent cell still 0
+
+    def test_reset_board(self):
+
+        board = Board.Board() # default (8x8 board, 3x1 ship)
+
+        # set all board values to 1 (which is MISS)
+        board.grid = [[board.cell_states['MISS'] for _ in range(Board.DEFAULT_BOARD_SIZE)]
+                    for _ in range(Board.DEFAULT_BOARD_SIZE)]
+
+        # verify that all board values are 1 (sum of cells is equal to number of cells)
+        total = 0
+        for row in board.grid:
+            total += sum(row)
+        self.assertEqual(total, Board.DEFAULT_BOARD_SIZE * Board.DEFAULT_BOARD_SIZE)
+
+        # now reset the board
+        board.reset_board()
+
+        # verify that sum of all cells is now 0
+        total = 0
+        for row in board.grid:
+            total += sum(row)
+        self.assertEqual(total, 0)
+
+    def test_add_ship(self):
+
+        board = Board.Board() # default (8x8 board, 3x1 ship)
+
+        # add_ship takes a list of tuples where each tuple is an xy coordinate
+
+        # add valid 3x1 ships
+        # board.add_ship([(0,0), (0,1), (0,2)])
