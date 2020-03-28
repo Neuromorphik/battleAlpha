@@ -66,3 +66,45 @@ class BoardTest(unittest.TestCase):
         board = Board.Board(board_size = 5, ship_size = 10)
         self.assertEqual(board.board_size, 8)
         self.assertEqual(board.ship_size, 3)
+
+    def test_coordinates_are_valid(self):
+
+        board = Board.Board() # default (8x8 board, 3x1 ship)
+
+        # test valid coordinates
+        self.assertEqual(board.coordinates_are_valid(0, 0), True) # edge case
+        self.assertEqual(board.coordinates_are_valid(7, 7), True) # edge case
+        self.assertEqual(board.coordinates_are_valid(4, 4), True)
+
+        # test invalid coordinates
+        self.assertEqual(board.coordinates_are_valid(-1, 0), False) # neg row
+        self.assertEqual(board.coordinates_are_valid(0, -1), False) # neg col
+        self.assertEqual(board.coordinates_are_valid(-1, -1), False) # neg row & col
+        self.assertEqual(board.coordinates_are_valid(10, 0), False) # too big row
+        self.assertEqual(board.coordinates_are_valid(0, 10), False) # too big col
+        self.assertEqual(board.coordinates_are_valid(10, 10), False) # too big row & col
+
+    def test_update_cell_AND_get_value_of_cell(self):
+
+        board = Board.Board() # default (8x8 board, 3x1 ship)
+
+        # test valid updates
+        self.assertEqual(board.get_value_of_cell(0, 0), 0) # cell should start as 0
+        board.update_cell(0, 0, board.cell_states['EMPTY']) # update that cell to 0
+        self.assertEqual(board.get_value_of_cell(0, 0), 0) # should still be 0
+
+        board.update_cell(0, 0, board.cell_states['MISS']) # update that cell to 1
+        self.assertEqual(board.get_value_of_cell(0, 0), 1) # should be 1
+
+        board.update_cell(0, 0, board.cell_states['SHIP_OK']) # update that cell to 2
+        self.assertEqual(board.get_value_of_cell(0, 0), 2) # should be 2
+
+        board.update_cell(0, 0, board.cell_states['SHIP_HIT']) # update that cell to 3
+        self.assertEqual(board.get_value_of_cell(0, 0), 3) # should be 3
+
+        # test invalid updates
+        board.update_cell(0, 0, -1) # try neg value
+        self.assertEqual(board.get_value_of_cell(0, 0), 3) # should fail and still be 3
+
+        board.update_cell(0, 0, 4) # try too big value
+        self.assertEqual(board.get_value_of_cell(0, 0), 3) # should fail and still be 3

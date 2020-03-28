@@ -26,13 +26,13 @@ class Board:
                 return True
         return False
 
-    def update_cell(self, row, column, newValue):
-        if coordinates_are_valid(row, column):
-                if newValue in cell_states.values():
-                    self.grid[row][column] = newValue
+    def update_cell(self, row, column, new_value):
+        if self.coordinates_are_valid(row, column):
+                if new_value in self.cell_states.values():
+                    self.grid[row][column] = new_value
 
     def get_value_of_cell(self, row, column):
-        if coordinates_are_valid(row, column):
+        if self.coordinates_are_valid(row, column):
             return self.grid[row][column]
 
     def reset_board(self):
@@ -42,7 +42,7 @@ class Board:
     def add_ship(self, coordinates):
         if len(coordinates) == self.ship_size and type(coordinates[0] == 'tuple'):
             for pair in coordinates:
-                if coordinates_are_valid(pair[0], pair[1]):
+                if self.coordinates_are_valid(pair[0], pair[1]):
                     self.update_cell(pair[0], pair[1], self.cell_states['SHIP_OK'])
 
     def ship_destroyed(self):
