@@ -47,6 +47,33 @@ class Board:
                 if self.coordinates_are_valid(pair[0], pair[1]):
                     self.update_cell(pair[0], pair[1], self.cell_states['SHIP_OK'])
 
+    def ship_placement_is_valid(self, coordinates):
+        # verify that the number of coordinates is correct and that the type is tuple
+        # and then verify that all of the cells are individually valid
+        if len(coordinates) == self.ship_size and type(coordinates[0] == 'tuple'):
+            for pair in coordinates:
+                if not self.coordinates_are_valid(pair[0], pair[1]):
+                    return False
+        else:
+            return False
+
+        # define a helper function to determine if a list of integers can form a sequence
+        def list_is_sequential(test_list):
+            return sorted(test_list) == list(range(min(test_list), max(test_list)+1))
+
+        # collect row values and column values on their own
+        row_values = [pair[0] for pair in coordinates]
+        col_values = [pair[1] for pair in coordinates]
+
+        # coordinates are valid iff all the row values form a sequence and all
+        # the column values are the same, or vice versa
+        if list_is_sequential(row_values) and len(set(col_values)) == 1:
+            return True
+        elif list_is_sequential(col_values) and len(set(row_values)) == 1:
+            return True
+        else:
+            return False
+
     def ship_destroyed(self):
         number_of_hits = 0
         for row in self.grid:

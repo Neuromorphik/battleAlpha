@@ -134,11 +134,23 @@ class BoardTest(unittest.TestCase):
             total += sum(row)
         self.assertEqual(total, 0)
 
-    def test_add_ship(self):
+    def test_ship_placement_is_valid(self):
 
         board = Board.Board() # default (8x8 board, 3x1 ship)
 
-        # add_ship takes a list of tuples where each tuple is an xy coordinate
+        # valid ship placements
+        self.assertTrue(board.ship_placement_is_valid([(0,0), (0,1), (0,2)])) # top left, horiztonal
+        self.assertTrue(board.ship_placement_is_valid([(0,0), (1,0), (2,0)])) # top left, vertical
+        self.assertTrue(board.ship_placement_is_valid([(7,5), (7,6), (7,7)])) # bottom right, horizontal
+        self.assertTrue(board.ship_placement_is_valid([(5,7), (6,7), (7,7)])) # bottom right, vertical
 
-        # add valid 3x1 ships
-        # board.add_ship([(0,0), (0,1), (0,2)])
+        # invalid ship placements
+        self.assertFalse(board.ship_placement_is_valid([(0,-1), (0,0), (0,1)])) # top left, horiztonal, shifted by one left, out of bounds
+        self.assertFalse(board.ship_placement_is_valid([(-1,0), (0,0), (1,0)])) # top left, vertical, shifted by one up, out of bounds
+        self.assertFalse(board.ship_placement_is_valid([(7,6), (7,7), (7,8)])) # bottom right, horizontal, shifted one right, out of bounds
+        self.assertFalse(board.ship_placement_is_valid([(6,7), (7,7), (8,7)])) # bottom right, vertical, shifted one down, out of bounds
+        self.assertFalse(board.ship_placement_is_valid([(2,0), (1,1), (0,2)])) # diagonal placement
+        self.assertFalse(board.ship_placement_is_valid([(0,0), (0,2), (0,4)])) # disconnected placement
+        self.assertFalse(board.ship_placement_is_valid([(0,0), (0,0), (0,0)])) # all coordinates the same
+        self.assertFalse(board.ship_placement_is_valid([(0,0), (0,1), (0,2), (0,3)])) # valid except too many coordinates
+        self.assertFalse(board.ship_placement_is_valid([(0,0), (0,1)])) # valid except too few coordinates
