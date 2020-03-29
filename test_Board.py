@@ -154,3 +154,22 @@ class BoardTest(unittest.TestCase):
         self.assertFalse(board.ship_placement_is_valid([(0,0), (0,0), (0,0)])) # all coordinates the same
         self.assertFalse(board.ship_placement_is_valid([(0,0), (0,1), (0,2), (0,3)])) # valid except too many coordinates
         self.assertFalse(board.ship_placement_is_valid([(0,0), (0,1)])) # valid except too few coordinates
+
+    def test_add_ship(self):
+
+        board = Board.Board() # default (8x8 board, 3x1 ship)
+
+        # add a valid ship and verify those cells have been updated
+        new_ship_coordinates = [(0,0), (0,1), (0,2)]
+        board.add_ship(new_ship_coordinates)
+        for coordinate in new_ship_coordinates:
+            self.assertEqual(board.get_value_of_cell(coordinate[0], coordinate[1]),
+            board.cell_states['SHIP_OK'])
+
+        # add an invalid ship and verify those cells are unchanged
+        board.reset_board()
+        new_ship_coordinates = [(0,0), (0,2), (0,4)]
+        board.add_ship(new_ship_coordinates)
+        for coordinate in new_ship_coordinates:
+            self.assertEqual(board.get_value_of_cell(coordinate[0], coordinate[1]),
+            board.cell_states['EMPTY'])
