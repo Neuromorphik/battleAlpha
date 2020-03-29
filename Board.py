@@ -42,7 +42,7 @@ class Board:
                     for _ in range(self.board_size)]
 
     def add_ship(self, coordinates):
-        if len(coordinates) == self.ship_size and type(coordinates[0] == 'tuple'):
+        if self.ship_placement_is_valid(coordinates):
             for pair in coordinates:
                 if self.coordinates_are_valid(pair[0], pair[1]):
                     self.update_cell(pair[0], pair[1], self.cell_states['SHIP_OK'])
