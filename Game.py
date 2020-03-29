@@ -27,12 +27,12 @@ class Game:
             ship_size = boards[player].ship_size
             coordinates = self.ui.get_ship_placement(player=player,
                                 board_size=board_size, ship_size=ship_size)
-            if (ship_placement_is_valid(coordinates)):
+            if (boards[player].ship_placement_is_valid(coordinates)):
                 return coordinates
 
     def take_turn(self, player_current, player_other):
-        self.ui.show_turn_message(turn=player_current)
-        self.ui.show_self_board(self.boards[player_current])
+        self.ui.show_turn_message(player=player_current)
+        self.ui.show_self_board(self.boards[player_current]) # should we be passing full obj?
         self.ui.show_other_board(self.boards[player_other])
 
         # get attack command
@@ -49,12 +49,12 @@ class Game:
             self.boards[player_other].update_cell(coordinate[0], coordinate[1], self.boards[player_other].cell_states['SHIP_HIT'])
             self.ui.display_hit_message()
         else:
-            self.ui.display_already_hit_message()
+            self.ui.display_redundant_attack_message()
 
         # show the result
         self.ui.show_other_board(self.boards[player_other])
 
-        # flag end game and identify winner if ship destroyed
+        # if ship destroyed, flag end game and identify winner
         if self.boards[player_other].ship_destroyed():
             self.game_over = True
             self.winner = player_current
