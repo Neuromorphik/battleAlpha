@@ -173,3 +173,21 @@ class BoardTest(unittest.TestCase):
         for coordinate in new_ship_coordinates:
             self.assertEqual(board.get_value_of_cell(coordinate[0], coordinate[1]),
             board.cell_states['EMPTY'])
+
+    def test_ship_destroyed(self):
+
+        board = Board.Board() # default (8x8 board, 3x1 ship)
+
+        # verify that this blank board does not meet criteria for ship_destroyed()
+        self.assertFalse(board.ship_destroyed())
+
+        # create a valid placement for ship, verify its valid, and then set those cells to 3 (SHIP_HIT)
+        new_ship_coordinates = [(0,0), (0,1), (0,2)]
+        self.assertTrue(board.ship_placement_is_valid(new_ship_coordinates))
+        for coordinate in new_ship_coordinates:
+            # check that ship still not destroyed, to account for partially hit scenario
+            self.assertFalse(board.ship_destroyed())
+            board.update_cell(coordinate[0], coordinate[1], board.cell_states['SHIP_HIT'])
+
+        # verify that the board now meets criteria for ship_destroyed()
+        self.assertTrue(board.ship_destroyed())
