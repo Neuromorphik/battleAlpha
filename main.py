@@ -5,3 +5,4 @@ import ConsoleUI
 
 ui = ConsoleUI.ConsoleUI()
 game = Game.Game(ui)
+game.start_game()

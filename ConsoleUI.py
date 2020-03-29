@@ -1,4 +1,6 @@
 
+import time
+
 SELF_BOARD_MAP = {
     0 : '[ ]', # EMPTY
     1 : '[m]', # MISS
@@ -22,10 +24,14 @@ class ConsoleUI:
     def get_ship_placement(self, player, ship_size):
         coordinates = []
         while len(coordinates) < ship_size:
-            print(f"Player {player}, provide next cell coordinate for ship.")
+            print(f"\nPlayer {player}, provide next cell coordinate for ship placement.")
             row = input("row (int): ")
             column = input("column (letter): ")
-            column = ord(column.upper())-65 # letter to numeric
+            try:
+                column = ord(column.upper())-65 # letter to numeric
+            except:
+                print('There was a problem with that, please try again.\n')
+                continue
             try:
                 coordinates.append((int(row)-1, int(column)))
             except:
@@ -49,6 +55,7 @@ class ConsoleUI:
                 print(currentRow)
         else:
             print('\nError: No implementation for show_self_board for this board size.')
+        time.sleep(2)
 
     # Takes a grid and its size, and shows the board from the perspective
     # of the other player that has incomplete information -- MISS and SHIP_HIT
@@ -68,12 +75,13 @@ class ConsoleUI:
                 print(currentRow)
         else:
             print('\nError: No implementation for show_self_board for this board size.')
+        time.sleep(2)
 
     # Prompts the player for attack coordinates. Loops until user provides
     # values for row and column that can be converted to integers. Does not verify
     # that the coordinates are valid, that is left to the Board class.
     def get_attack(self, player):
-        print(f"Choose your attack coordinates, player {player}.")
+        print(f"\nChoose your attack coordinates, player {player}.")
         while True:
             row = input("row (int): ")
             column = input("column (letter): ")
@@ -86,31 +94,46 @@ class ConsoleUI:
     # Displays a simple message to the console stating that it is now a different
     # player's turn.
     def show_turn_message(self, player):
+        self.clear_screen()
         print(f"It is now Player {player}'s turn.")
+        time.sleep(4)
 
     # This method implements the main menu for the game. The player can choose
     # to 'play' or 'quit'.
     def get_menu_selection(self):
         pass
 
+    def show_start_message(self):
+        self.clear_screen()
+        print('Starting Game. Players need to place ships.')
+        time.sleep(2)
+
     # Displays a simple message to the console stating that the application is
     # exiting.
     def show_exit_message(self):
         print('Exiting game.')
+        time.sleep(2)
 
     # Displays a simple message to the console stating that an attack missed.
     def display_miss_message(self):
         print('Miss.')
+        time.sleep(2)
 
     # Displays a simple message to the console stating that an attack hit.
     def display_hit_message(self):
         print('Hit.')
+        time.sleep(2)
 
     # Displays a simple message to the console stating that the player has attacked
     # a coordinate that they have previously targetted.
     def display_redundant_attack_message(self):
-        print('Miss (again).')
+        print('Miss.')
+        time.sleep(2)
 
     # Displays a simple message to the console stating that a player has won.
     def declare_winner(self, player):
         print(f"You sunk my battleship, Player {player}.")
+        time.sleep(2)
+
+    def clear_screen(self):
+        print('\n' * 50)

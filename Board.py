@@ -20,8 +20,6 @@ class Board:
         self.grid = [[self.cell_states['EMPTY'] for _ in range(self.board_size)]
                     for _ in range(self.board_size)]
 
-        self.ship_coordinates = None
-
     def coordinates_are_valid(self, row, column):
         if row >= 0 and row < self.board_size:
             if column >= 0 and column < self.board_size:
