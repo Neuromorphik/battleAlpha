@@ -6,8 +6,11 @@ class Game:
     def __init__(self, ui_manager, board_size=Board.DEFAULT_BOARD_SIZE,
                     ship_ship=Board.DEFAULT_SHIP_SIZE):
         self.ui = ui_manager
-        self.board_player_1 = Board.Board(board_size=board_size, ship_size=ship_size)
-        self.board_player_2 = Board.Board(board_size=board_size, ship_size=ship_size)
+        self.boards = {
+                1 : Board.Board(board_size=board_size, ship_size=ship_size),
+                2 : Board.Board(board_size=board_size, ship_size=ship_size)
+        }
+        self.winner = None
 
     def show_menu(self):
         choice = self.ui.get_menu_selection()
@@ -18,66 +21,63 @@ class Game:
         else:
             pass
 
+    def get_ship_placement(self, player):
+        while True:
+            board_size = boards[player].board_size
+            ship_size = boards[player].ship_size
+            coordinates = self.ui.get_ship_placement(player=player,
+                                board_size=board_size, ship_size=ship_size)
+            if (ship_placement_is_valid(coordinates)):
+                return coordinates
+
+    def take_turn(self, player_current, player_other):
+        self.ui.show_turn_message(turn=player_current)
+        self.ui.show_self_board(self.boards[player_current])
+        self.ui.show_other_board(self.boards[player_other])
+
+        # get attack command
+        while True:
+            coordinate = self.input.get_attack(player=player_current)
+            if boards[player_other].coordinates_are_valid(coordinate[0], coordinate[1]):
+                break
+
+        # execute command
+        if self.boards[player_other].get_value_of_cell(coordinate) == self.boards[player_other].cell_states['EMPTY']:
+            self.boards[player_other].update_cell(coordinate[0], coordinate[1], self.boards[player_other].cell_states['MISS'])
+            self.ui.display_miss_message()
+        elif self.boards[player_other].get_value_of_cell(coordinate) == self.boards[player_other].cell_states['SHIP_OK']:
+            self.boards[player_other].update_cell(coordinate[0], coordinate[1], self.boards[player_other].cell_states['SHIP_HIT'])
+            self.ui.display_hit_message()
+        else:
+            self.ui.display_already_hit_message()
+
+        # show the result
+        self.ui.show_other_board(self.boards[player_other])
+
+        # flag end game and identify winner if ship destroyed
+        if self.boards[player_other].ship_destroyed():
+            self.game_over = True
+            self.winner = player_current
+
+
     def start_game(self):
-        self.turn = 1
         self.game_over = False
-        self.board_player_1.reset_board()
-        self.board_player_2.reset_board()
+        self.boards[1].reset_board()
+        self.boards[2].reset_board()
+
+        self.boards[1].add_ship(get_ship_placement(player=1))
+        self.boards[2].add_ship(get_ship_placement(player=2))
+
         self.ui.show_start_message()
 
-        while not self.game_over:
-            # clear console to keep privacy between players
-
-            # handle p1 turn
-            if (self.turn == 1):
-                # show p1 their interface
-                self.ui.show_turn_message(turn=1)
-                self.ui.show_self_board(self.board_player_1)
-                self.ui.show_other_board(self.board_player_2)
-
-                # get p1 attack command
-                while True:
-                    coordinate = self.input.get_attack()
-                    if self.board_player_2.coordinates_are_valid(coordinate[0], coordinate[1]):
-                        break
-
-                # execute command
-                self.board_player_2.update_cell(coordinate[0], coordinate[1])
-
-                # show p1 the result
-                self.ui.show_other_board(self.board_player_2)
-
-                # end game if p2 ship destroyed
-                if self.board_player_2.ship_destroyed():
-                    self.game_over = True
-
-                # set turn to p2
-                self.turn = 2
-
-            # handle p2 turn
-            else:
-                # show p2 their interface
-                self.ui.show_turn_message(turn=2)
-                self.ui.show_self_board(self.board_player_2)
-                self.ui.show_other_board(self.board_player_1)
-
-                # get p2 attack command
-                while True:
-                    coordinate = self.input.get_attack()
-                    if self.board_player_2.coordinates_are_valid(coordinate[0], coordinate[1]):
-                        break
-
-                # execute command
-                self.board_player_1.update_cell(coordinate[0], coordinate[1])
-
-                # show p2 the result
-                self.ui.show_other_board(self.board_player_1)
-
-                # end game if p1 ship destroyed
-                if self.board_player_1.ship_destroyed():
-                    self.game_over = True
-
-                # set turn to p1
-                self.turn = 1
+        while True:
+            self.take_turn(1, 2)
+            if self.game_over:
+                self.ui.declare_winner(player=self.winner)
+                break
+            self.take_turn(2, 1)
+            if self.game_over:
+                self.ui.declare_winner(player=self.winner)
+                break
 
         self.show_menu()
