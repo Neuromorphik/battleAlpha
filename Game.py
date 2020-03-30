@@ -15,15 +15,6 @@ class Game:
         self.ship_size = ship_size
         self.winner = None
 
-    def show_menu(self):
-        choice = self.ui.get_menu_selection()
-        if choice == 'quit':
-            self.ui.show_exit_message()
-        elif choice == 'play':
-            self.start_game()
-        else:
-            pass
-
     def get_ship_placement(self, player):
         while True:
             board_size = boards[player].board_size
@@ -34,9 +25,9 @@ class Game:
                 return coordinates
 
     def take_turn(self, player_current, player_other):
-        self.ui.show_turn_message(player=player_current)
-        self.ui.show_self_board(self.boards[player_current].grid, self.board_size)
-        self.ui.show_other_board(self.boards[player_other].grid, self.board_size)
+        self.ui.display_turn_message(player=player_current)
+        self.ui.display_self_board(self.boards[player_current].grid, self.board_size)
+        self.ui.display_other_board(self.boards[player_other].grid, self.board_size)
 
         # get attack command
         while True:
@@ -54,9 +45,6 @@ class Game:
         else:
             self.ui.display_redundant_attack_message()
 
-        # show the result
-        self.ui.show_other_board(self.boards[player_other].grid, self.board_size)
-
         # if ship destroyed, flag end game and identify winner
         if self.boards[player_other].ship_destroyed():
             self.game_over = True
@@ -65,8 +53,7 @@ class Game:
 
     def start_game(self):
 
-        self.ui.show_start_message()
-        time.sleep(1)
+        self.ui.display_start_message()
 
         self.game_over = False
         self.boards[1].reset_board()
@@ -76,7 +63,7 @@ class Game:
         for player in [1, 2]:
             valid_placement = False
             while not valid_placement:
-                self.ui.show_self_board(self.boards[player].grid, self.board_size)
+                self.ui.display_self_board(self.boards[player].grid, self.board_size)
                 coordinates = self.ui.get_ship_placement(player=player, ship_size=self.ship_size)
                 valid_placement = self.boards[player].ship_placement_is_valid(coordinates)
                 if not valid_placement:
@@ -84,9 +71,10 @@ class Game:
                     time.sleep(2)
 
             self.boards[player].add_ship(coordinates)
-            self.ui.show_self_board(self.boards[player].grid, self.board_size)
+            self.ui.display_self_board(self.boards[player].grid, self.board_size)
             self.ui.clear_screen()
 
+        # loop trough turns until a ship is destroyed
         while True:
             self.take_turn(1, 2)
             if self.game_over:
@@ -97,4 +85,4 @@ class Game:
                 self.ui.declare_winner(player=self.winner)
                 break
 
-        self.show_menu()
+        self.ui.display_exit_message()

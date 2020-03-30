@@ -45,6 +45,7 @@ class Board:
                 if self.coordinates_are_valid(pair[0], pair[1]):
                     self.update_cell(pair[0], pair[1], self.cell_states['SHIP_OK'])
 
+
     def ship_placement_is_valid(self, coordinates):
         # verify that the number of coordinates is correct and that the type is tuple
         # and then verify that all of the cells are individually valid
