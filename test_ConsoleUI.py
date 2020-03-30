@@ -39,6 +39,7 @@ class ConsoleUITest(unittest.TestCase):
         with mock.patch('builtins.input', return_value="1"):
             self.assertEqual(ui.get_ship_placement(1, 3, testing=True), [(0, -16), (0, -16), (0, -16)])
 
+    # tests the display methods
     def test_messages(self):
 
         ui = ConsoleUI.ConsoleUI()
