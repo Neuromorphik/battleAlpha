@@ -2,6 +2,15 @@
 import Board
 import time
 
+##
+# Game class is dependent on Board class (tightly coupled) but can accept
+# various UI classes provided they implement the methods called in Game class
+# (loosely coupled).
+# Game class implements the logic of taking turns at a game of battleship.
+# When the game starts, each player places their ship and then take turns
+# selecting a coordinate to attack. The first player to hit all of the enemy ship
+# coordinates wins.
+##
 class Game:
 
     def __init__(self, ui_manager, board_size=Board.DEFAULT_BOARD_SIZE,
@@ -15,6 +24,9 @@ class Game:
         self.ship_size = ship_size
         self.winner = None
 
+    # calls the UI class to get user input for the ship and repeats this
+    # process until valid input is provided that meets the criteria of
+    # Board method ship_placement_is_valid(). Returns these coordinates.
     def get_ship_placement(self, player):
         while True:
             board_size = boards[player].board_size
@@ -24,6 +36,8 @@ class Game:
             if (boards[player].ship_placement_is_valid(coordinates)):
                 return coordinates
 
+    # Gets user input for an attack, executes the command once its valid,
+    # and ends the game if a ship is destroyed.
     def take_turn(self, player_current, player_other):
         self.ui.display_turn_message(player=player_current)
         self.ui.display_self_board(self.boards[player_current].grid, self.board_size)
@@ -50,7 +64,8 @@ class Game:
             self.game_over = True
             self.winner = player_current
 
-
+    # sets up a new game and has each player place their ships then enters the
+    # main game loop.
     def start_game(self):
 
         self.ui.display_start_message()
