@@ -1,4 +1,3 @@
-
 # boards are square, the size determines length
 DEFAULT_BOARD_SIZE = 8
 DEFAULT_SHIP_SIZE = 3
