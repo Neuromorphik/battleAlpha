@@ -2,8 +2,18 @@
 import unittest
 import Board
 
+##
+# BoardTest inherits from unittest's TestCase class.
+# BoardTest tests the methods in the Board class.
+# Broadly, the set of tests verifies the following:
+# - default board initializes ok
+# - board initializes ok with valid custom board_size and ship_size
+# - board initializes with defaults with nonsense board_size and ship_size
+# - all the board methods are valid - placing ships, geting/updating cells, etc.
+##
 class BoardTest(unittest.TestCase):
 
+    # verify that board initializes ok with defaults
     def test_default_board_init(self):
 
         board = Board.Board()
@@ -23,6 +33,7 @@ class BoardTest(unittest.TestCase):
         self.assertEqual(board.board_size, 8)
         self.assertEqual(board.ship_size, 3)
 
+    # verify that board initializes ok with correct but custom init params
     def test_modified_board_init(self):
 
         board = Board.Board(board_size = 10, ship_size = 2)
@@ -42,6 +53,7 @@ class BoardTest(unittest.TestCase):
         self.assertEqual(board.board_size, 10)
         self.assertEqual(board.ship_size, 2)
 
+    # verify that board class can tolerate bad init params
     def test_invalid_board_init(self):
 
         # If we try to init with board_size <= 0, should use default sizes
@@ -67,6 +79,8 @@ class BoardTest(unittest.TestCase):
         self.assertEqual(board.board_size, 8)
         self.assertEqual(board.ship_size, 3)
 
+    # test coordinates_are_valid() method
+    # coordinates_are_valid takes row, column and returns true/false
     def test_coordinates_are_valid(self):
 
         board = Board.Board() # default (8x8 board, 3x1 ship)
@@ -84,6 +98,8 @@ class BoardTest(unittest.TestCase):
         self.assertEqual(board.coordinates_are_valid(0, 10), False) # too big col
         self.assertEqual(board.coordinates_are_valid(10, 10), False) # too big row & col
 
+    # test update_cell method
+    # and test get_value_of_cell method
     def test_update_cell_AND_get_value_of_cell(self):
 
         board = Board.Board() # default (8x8 board, 3x1 ship)
@@ -134,6 +150,7 @@ class BoardTest(unittest.TestCase):
             total += sum(row)
         self.assertEqual(total, 0)
 
+    # test ship_placement_is_valid method
     def test_ship_placement_is_valid(self):
 
         board = Board.Board() # default (8x8 board, 3x1 ship)
@@ -155,6 +172,7 @@ class BoardTest(unittest.TestCase):
         self.assertFalse(board.ship_placement_is_valid([(0,0), (0,1), (0,2), (0,3)])) # valid except too many coordinates
         self.assertFalse(board.ship_placement_is_valid([(0,0), (0,1)])) # valid except too few coordinates
 
+    # test add_ship method
     def test_add_ship(self):
 
         board = Board.Board() # default (8x8 board, 3x1 ship)
@@ -174,6 +192,7 @@ class BoardTest(unittest.TestCase):
             self.assertEqual(board.get_value_of_cell(coordinate[0], coordinate[1]),
             board.cell_states['EMPTY'])
 
+    # test ship_destroyed method
     def test_ship_destroyed(self):
 
         board = Board.Board() # default (8x8 board, 3x1 ship)
