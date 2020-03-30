@@ -1,9 +1,11 @@
 # battleAlpha
 
-Requires python3.
+Battle Alpha is a simple battleship console application
 
-Requires unittest and time libraries (standard).
+  Requires python3
 
-Unit tests run by issuing this command: python -m unittest
+  Requires unittest and time libraries (standard)
 
-Run the game by executing main.py
+  Unit tests run by issuing this command: python -m unittest
+
+  Run the game by executing main.py
